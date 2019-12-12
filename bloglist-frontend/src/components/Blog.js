@@ -2,13 +2,11 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { createBlog, removeBlog, likeBlog } from '../reducers/blogReducers'
+import { Link } from 'react-router-dom'
 
 
 
 const Blog = (props) => {
-  const [blogVisible, setBlogVisible] = useState(false)
-  const hideWhenVisible = { display : blogVisible ? 'none' : ''}
-  const showWhenVisible = { display : blogVisible ? '' : 'none'}
   const blogStyle = {
     padding: 10,
     paddingLeft: 0,
@@ -38,17 +36,14 @@ const Blog = (props) => {
 
   return (
     <div style={blogStyle}>
-      <div style={{ ...hideWhenVisible  }} >
-        <div style={titleStyle} onClick={() => setBlogVisible(!blogVisible)}>{props.blog.title}</div> <div>{props.blog.author} </div>
-      </div>
-      <div style={{ ...showWhenVisible }}>
-        <div style={titleStyle} onClick={() => setBlogVisible(!blogVisible)}>{props.blog.title}</div>
+      <Link to={`/blogs/${props.blog._id}`}>
+        <div style={titleStyle}>{props.blog.title}</div>
         <div> {props.blog.author} </div>
         <a href={props.blog.url}>{props.blog.url}</a>
-        <div>{props.blog.likes} likes<button onClick={ ()=> likeBlogHandler()}>like</button> </div>
         <div>added by {props.blog.user.username}</div>
-        <button onClick={() => removeBlogHandler(props.blog.title, props.blog.author, props.blog._id)}>remove</button>
-      </div>
+      </Link>
+      <div>{props.blog.likes} likes<button onClick={ ()=> likeBlogHandler()}>like</button> </div>
+      <button onClick={() => removeBlogHandler(props.blog.title, props.blog.author, props.blog._id)}>remove</button>
     </div>
   )
 }

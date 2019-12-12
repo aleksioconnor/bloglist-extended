@@ -20,7 +20,7 @@ export const initUser = () => {
     blogsService.setToken(user.token)
     return({ type: 'SET_USER', data: user })
   }
-  else return ({type: 'CLEAR_USER', data: null})
+  else return ( { type: 'CLEAR_USER', data: null } )
 }
 
 export const clearUser = () => {
