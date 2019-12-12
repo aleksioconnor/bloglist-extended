@@ -1,8 +1,8 @@
 import React from 'react'
-import loginService from '../services/login'
 import { useField } from '../hooks'
 import { connect } from 'react-redux'
 import { createNotification, clearNotification } from '../reducers/notificationReducers'
+import { logIn } from '../reducers/userReducers'
 
 
 const Login = (props) => {
@@ -13,11 +13,7 @@ const Login = (props) => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({'username': username.props.value, 'password': password.props.value })
-
-      window.localStorage.setItem('loggedUser', JSON.stringify(user) )
-      props.setUser(user)
-
+      await props.logIn({ 'username': username.props.value, 'password': password.props.value })
     } catch(e) {
       props.createNotification('wrong credentials')
       setTimeout(() => {
@@ -50,7 +46,8 @@ const Login = (props) => {
 
 const mapDispatchToProps = {
   createNotification,
-  clearNotification
+  clearNotification,
+  logIn
 }
 
 const mapStateToProps = (state) => {

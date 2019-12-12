@@ -3,65 +3,54 @@ import Blog from './Blog'
 import { connect } from 'react-redux'
 import { createBlog } from '../reducers/blogReducers'
 import { createNotification, clearNotification } from '../reducers/notificationReducers'
+import { clearUser } from '../reducers/userReducers'
 
 
-const LogOut = () => {
-  const logUserOut = () => {
-    window.localStorage.removeItem('loggedUser')
-  }
+const LogOut = (props) => {
   return (
-    <button onClick={() => {logUserOut()}}>Logout</button>
+    <button onClick={() => props.logOut()}>Logout</button>
   )
 }
 
-const AddBlog = ({
-  user,
-  title,
-  setTitle,
-  author,
-  setAuthor,
-  url,
-  setUrl,
-  createNot,
-  clearNot,
-  blogVisible,
-  setBlogVisible,
-  newBlog
-}) => {
+const AddBlog = (props) => {
 
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     try {
-      newBlog({
+      const title = props.title
+      const author = props.author
+      const url = props.url
+      const user = props.user
+      props.newBlog({
         title, author, url, user
       })
-      createNot(`a new blog ${title} by ${author} added`)
+      props.createNot(`a new blog ${props.title} by ${props.author} added`)
       setTimeout(() => {
-        clearNot()
+        props.clearNot()
       }, 5000)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+      props.setTitle('')
+      props.setAuthor('')
+      props.setUrl('')
 
 
 
     } catch(e) {
-      createNot('blog was not added')
+      props.createNot('blog was not added')
       setTimeout(() => {
-        clearNot()
+        props.clearNot()
       }, 5000)
     }
   }
 
 
-  const hideWhenVisible = { display : blogVisible ? 'none' : '' }
-  const showWhenVisible = { display : blogVisible ? '' : 'none' }
+  const hideWhenVisible = { display : props.blogVisible ? 'none' : '' }
+  const showWhenVisible = { display : props.blogVisible ? '' : 'none' }
 
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={() => setBlogVisible(true)}>add blog</button>
+        <button onClick={() => props.setBlogVisible(true)}>add blog</button>
       </div>
       <div style={showWhenVisible}>
         <h3>create new</h3>
@@ -69,27 +58,27 @@ const AddBlog = ({
                 title:
           <input
             type='text'
-            value={title}
+            value={props.title}
             name='title'
-            onChange={({ target }) => setTitle(target.value)}
+            onChange={({ target }) => props.setTitle(target.value)}
           />
                 author:
           <input
             type='text'
-            value={author}
+            value={props.author}
             name='author'
-            onChange={({ target }) => setAuthor(target.value)}
+            onChange={({ target }) => props.setAuthor(target.value)}
           />
                 url:
           <input
             type='text'
-            value={url}
+            value={props.url}
             name='url'
-            onChange={({ target }) => setUrl(target.value)}
+            onChange={({ target }) => props.setUrl(target.value)}
           />
           <button type='submit'>create</button>
         </form>
-        <button onClick={() => setBlogVisible(false)}>cancel</button>
+        <button onClick={() => props.setBlogVisible(false)}>cancel</button>
       </div>
     </div>
   )
@@ -103,7 +92,7 @@ const Dashboard = (props) => {
         {props.notifications}
       </p>
         Hello {props.user.username}
-      <LogOut />
+      <LogOut logOut={props.clearUser}/>
       <div>
         <h2>blogs</h2>
         {props.blogs
@@ -119,7 +108,6 @@ const Dashboard = (props) => {
         setAuthor={props.setAuthor}
         url={props.url}
         setUrl={props.setUrl}
-        user={props.user}
         createNot={props.createNotification}
         clearNot={props.clearNotification}
         setBlogVisible={props.setBlogVisible}
@@ -134,13 +122,15 @@ const Dashboard = (props) => {
 const mapDispatchToProps = {
   createNotification,
   clearNotification,
-  createBlog
+  createBlog,
+  clearUser
 }
 
 const mapStateToProps = (state) => {
   return {
     notifications: state.notifications,
     blogs: state.blogs,
+    user: state.user
   }
 }
 
