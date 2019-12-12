@@ -39,4 +39,14 @@ usersRouter.get('/', async (request, response, next) => {
     }
 })
 
+usersRouter.get('/users', async (request, response, next) => {
+    try {
+        const users = await User.find({})
+        response.json(users)
+    }
+    catch (exception) {
+        next(exception)
+    }
+})
+
 module.exports = usersRouter
