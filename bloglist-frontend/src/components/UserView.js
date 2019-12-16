@@ -16,7 +16,6 @@ const UserView =  (props) => {
   const BlogList = () => {
     if(userList.length) {
       const userD = userList.find(n => n.id === props.user)
-      console.log(props.id)
       const blogs = userD.blogs.map(n => <li key={n._id}> {n.title} </li>)
       return(
         <div>

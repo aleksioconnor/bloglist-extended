@@ -1,5 +1,6 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const Comment = require('../models/comment')
 const User = require ('../models/user') // mock
 const jwt = require('jsonwebtoken')
 
@@ -14,6 +15,24 @@ blogsRouter.get('/', async (request, response, next) => {
   }
 })
 
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  try {
+    const blog = await Blog.findById(request.params.id)
+    request.body.blog = blog._id
+    const comment = new Comment(request.body)
+    const res = await comment.save()
+    response.status(201).json(res)
+  } catch (exception) {
+    next(exception)
+  }
+})
+
+blogsRouter.get('/:id/comments', async (request, response, next) => {
+  const res = await Comment.find({blog: request.params.id})
+  console.log(res)
+  response.status(201).json(res)
+})
+
 const getTokenFrom = request => {
   const authorization = request.get('authorization')
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
@@ -24,7 +43,6 @@ const getTokenFrom = request => {
 
 blogsRouter.post('/', async (request, response, next) => {
   const token = getTokenFrom(request)
-  console.log(token)
   try {
     const decodedToken = jwt.verify(token, process.env.SECRET)
     if (!token || !decodedToken.id) {
