@@ -6,11 +6,14 @@ import { createNotification, clearNotification } from '../reducers/notificationR
 import { clearUser } from '../reducers/userReducers'
 
 
+
 const LogOut = (props) => {
   return (
     <button onClick={() => props.logOut()}>Logout</button>
   )
 }
+
+
 
 const AddBlog = (props) => {
 
@@ -47,12 +50,23 @@ const AddBlog = (props) => {
   const hideWhenVisible = { display : props.blogVisible ? 'none' : '' }
   const showWhenVisible = { display : props.blogVisible ? '' : 'none' }
 
+  const styles = {
+    addBlog: {
+      color: 'red',
+    },
+    title: {
+      display: 'flex',
+      textAlign: 'center',
+      justifyContent: 'space-around'
+    }
+  }
+
   return (
     <div>
       <div style={hideWhenVisible}>
         <button onClick={() => props.setBlogVisible(true)}>add blog</button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={ { ...showWhenVisible, ...styles.addBlog } }>
         <h3>create new</h3>
         <form onSubmit={handleSubmit}>
                 title:
@@ -137,3 +151,4 @@ const mapStateToProps = (state) => {
 const ConnectedDashboard = connect(mapStateToProps, mapDispatchToProps)(Dashboard)
 
 export default ConnectedDashboard
+
